@@ -1,0 +1,50 @@
+version: "3.3"
+services:
+  eacs-tag-auth:
+    image: chemicstry/eacs-tag-auth
+    command:
+      - --tls_key=/run/secrets/tls_key
+      - --tls_cert=/run/secrets/tls_cert
+      - --jwtPublicKey=/run/secrets/jwt_pub
+    secrets:
+      - tls_key
+      - tls_cert
+      - jwt_pub
+    ports:
+      - "3000:3000"
+  eacs-user-auth:
+    image: chemicstry/eacs-user-auth
+    command:
+      - --tls_key=/run/secrets/tls_key
+      - --tls_cert=/run/secrets/tls_cert
+      - --jwtPublicKey=/run/secrets/jwt_pub
+      - --ldapURL=ldap://127.0.0.1
+      - --ldapCert=
+      - --ldapSearchBase=dc=example,dc=com
+      - --ldapUser=cn=admin,dc=example,dc=com
+      - --ldapPass=admin
+    secrets:
+      - tls_key
+      - tls_cert
+      - jwt_pub
+    ports:
+      - "3001:3000"
+  eacs-message-bus:
+    image: chemicstry/eacs-message-bus
+    command:
+      - --tls_key=/run/secrets/tls_key
+      - --tls_cert=/run/secrets/tls_cert
+      - --jwtPublicKey=/run/secrets/jwt_pub
+    secrets:
+      - tls_key
+      - tls_cert
+      - jwt_pub
+    ports:
+      - "3002:3000"
+secrets:
+  tls_key:
+    file: tls_key.pem
+  tls_cert:
+    file: tls_cert.pem
+  jwt_pub:
+    file: jwt_pub.pem
